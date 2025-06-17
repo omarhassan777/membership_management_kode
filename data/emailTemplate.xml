@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="email_template_expired_membership" model="mail.template">
+        <field name="name">Expired Membership Notification</field>
+        <field name="model_id" ref="membership_management_kode.model_membership_management_club"/>
+        <field name="email_from">{{ object.company_id.email or object.env.user.email }}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="subject">Membership Expired - ${object.partner_id.name}</field>
+        <field name="body_html"><![CDATA[
+            <div>
+                <p>Dear <t t-out="object.partner_id.name"/>,</p>
+                <p>Your membership has expired on <t t-out="object.membership_date_to"/>.</p>
+                <p>Please renew your membership to continue enjoying our services.</p>
+                <p>Best regards,</p>
+                <p><t t-out="object.company_id.name or 'Your Organization'"/></p>
+            </div>
+        ]]></field>
+    </record>
+</odoo>

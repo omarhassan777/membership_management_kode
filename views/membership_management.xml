@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     <record id="membership_management_club_view_form" model="ir.ui.view">
+        <field name="name">membership.management.club.view.form</field>
+        <field name="model">membership.management.club</field>
+        <field name="arch" type="xml">
+            <form string="Membership Management" create="1" edit="1">
+                <header>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,approved,black_list"/>
+                    <button name="set_to_approved" type="object" string="Approve" class="btn-primary"
+                            attrs="{'invisible': [('status', '!=', 'draft')]}" groups="membership_management_kode.group_membership_manager"/>
+                    <button name="set_to_blacklist" type="object" string="Blacklist"
+                            attrs="{'invisible': [('status', '!=', 'approved')]}"  groups="membership_management_kode.group_membership_manager"/>
+                    <button name="set_to_draft" type="object" string="Reset to Draft"
+                            attrs="{'invisible': [('status', '=', 'draft')]}" groups="membership_management_kode.group_membership_manager"/>
+                       <button name="create_renewal_order" type="object" string="Renew Membership" 
+                        class="btn-primary" attrs="{'invisible': [('status', '!=', 'approved')]}"/>
+                </header>
+                <sheet>
+                 <div class="oe_button_box" name="button_box">
+                    <button name="action_view_sale_orders" type="object"
+                            class="oe_stat_button" icon="fa-shopping-cart">
+                        <field name="sale_order_count" widget="statinfo" string="Sale Orders"/>
+                    </button>
+                </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="membership_product_id" options="{'no_create': True}"/>
+                            <field name="last_renewal_date" readonly="1"/>
+                            <!-- <field name="active"/> -->
+                        </group>
+                        <group>
+                          
+                            <field name="membership_date_from"/>
+                            <field name="membership_date_to"/>
+                            <field name="is_expired" />
+                    <field name="days_until_expiry" widget="progressbar" 
+       options="{'editable': false, 'max_value': 365, 'overflow_class': 'danger', 'show_value': true}"/>
+                        </group>
+                    </group>
+                
+                    
+                     <notebook>
+                    <page string="Memberships invoice">
+                            <!-- Add the membership lines section -->
+                <field name="member_lines" nolabel="1" colspan="4" readonly="1">
+                    <tree string="Memberships" groups="membership_management_kode.group_membership_manager">
+                        <field name="date"/>
+                        <field name="membership_id"/>
+                        <field name="member_price"/>
+                        <field name="account_invoice_id"/>
+                        <field name="state"/>
+                    </tree>
+                    <form string="Memberships">
+                        <group col="2">
+                            <group>
+                                <field name="membership_id"/>
+                                <field name="date"/>
+                                <field name="state"/>
+                            </group>
+                            <group>
+                                <field name="member_price"/>
+                                <field name="account_invoice_id" context="{'form_view_ref': 'account.view_move_form'}"/>
+                            </group>
+                        </group>
+                    </form>
+                </field>
+                    </page>
+                    <page string="History" groups="membership_management_kode.group_membership_manager">
+                        <field name="message_ids" widget="mail_thread"/>
+                    </page>
+                </notebook>
+
+                </sheet>
+                 <div class="oe_chatter">
+                <field name="message_follower_ids"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+            </form>
+        </field>
+    </record>
+    <record id="membership_management_club_view_search" model="ir.ui.view">
+    <field name="name">membership.management.club.search</field>
+    <field name="model">membership.management.club</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="partner_id"/>
+            <field name="membership_product_id"/>
+            <filter string="Expired Memberships" name="expired" 
+                   domain="[('is_expired','=',True)]"/>
+            <filter string="Expiring Soon (≤30 days)" name="expiring_soon" 
+                   domain="[('days_until_expiry','&lt;=',30),('is_expired','=',False)]"/>
+            <filter string="Active Memberships" name="active" 
+                   domain="[('is_expired','=',False),('status','=','approved')]"/>
+            <separator/>
+            <filter string="Group By" name="group_by" context="{'group_by':'status'}"/>
+        </search>
+    </field>
+</record>
+
+    <record id="membership_management_club_view_tree" model="ir.ui.view">
+        <field name="name">membership.management.club.view.tree</field>
+        <field name="model">membership.management.club</field>
+        <field name="arch" type="xml">
+            <tree  decoration-danger="is_expired" decoration-warning="days_until_expiry &lt; 30">
+                <!-- <field name="name"/> -->
+                <field name="partner_id"/>
+                <field name="status" widget="statusbar"
+                 statusbar_visible="draft,approved,black_list"/>
+                   <field name="membership_product_id" options="{'no_create': True}"/>
+                    <field name="membership_date_from"/>
+                    <field name="membership_date_to"/>
+                       <field name="is_expired" />
+                       <field name="days_until_expiry" widget="progressbar" 
+       options="{'editable': false, 'max_value': 365, 'overflow_class': 'danger', 'show_value': true}"/>
+       
+            </tree>
+        </field>
+    </record>
+
+    <record id="membership_management_club_action" model="ir.actions.act_window">
+        <field name="name">Membership Management</field>
+        <field name="res_model">membership.management.club</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="membership_management_club_view_tree"/>
+    <field name="search_view_id" ref="membership_management_club_view_search"/>
+    <field name="context">{
+        'search_default_expired': False,
+        'search_default_expiring_soon': True
+    }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first member
+            </p>
+        </field>
+    </record>
+
+  
+      <menuitem id="membership_management_root" name="Membership Management" action="membership_management_club_action"
+              parent="membership.menu_association" sequence="50" />
+
+  
+
+</odoo>

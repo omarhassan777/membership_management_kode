@@ -1,0 +1,31 @@
+{
+    'name': 'Membership Management',
+    'version': '1.0',
+    'category': '',
+    'sequence': 1,
+    'summary': '',
+    'description': """
+           membership management helps the team handle member data,
+           renewal tracking, branch relationships, and approval workflows.
+    """,
+     'author': '',
+    'company': '',
+    'maintainer': '',
+    'website': "omarhassanhhh7@gmail.com",
+    'website': '',
+    'depends': ['base','membership','account','mail','sale'],
+    'data': [
+         'security/security.xml',
+        'security/ir.model.access.csv',
+         'data/emailTemplate.xml',
+         'data/membership_sequence.xml',
+        'views/membership_management.xml',
+        'views/ir_cron_data.xml',
+        'views/res_partner.xml',
+        # 'report/account_move_reports.xml',
+    ],
+    'installable': True,
+     'images': ['static/description/banner.png'],
+    'auto_install': False,
+    'application': False,
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+
+   <record model="ir.ui.view" id="view_partner_form1">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+              
+                 <xpath expr="//div/h1" position="after">
+                    <label for="name_ar" class="oe_edit_only"/>
+                    <h1>
+                    <field name="name_ar" placeholder="Arabic Full Name ......"/>
+                    <field name="lastname" placeholder="Last Name......"/>
+                    <field name="firstname" placeholder="First Name......"/>
+                    </h1>
+                </xpath>
+                <!-- <field name="name" position="after">
+                    <field name="name_ar"/>
+                    <field name="lastname" placeholder="Last Name......"/>
+                    <field name="firstname" placeholder="First Name......"/>
+                </field> -->
+            </field>
+        </record>
+
+
+
+
+</odoo>

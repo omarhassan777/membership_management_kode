@@ -1,0 +1,5 @@
+from . import membership_management
+from . import res_partner
+
+
+# membership_management_kode.access_membership_management_club,access_membership_management_club,membership_management_kode.model_membership_management_club,base.group_user,1,0,0,0
